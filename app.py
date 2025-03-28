@@ -1,30 +1,22 @@
 from flask import Flask, request, jsonify
-from google.cloud import vision
-import os
-import io
 from flask_cors import CORS
-
-app = Flask(__name__)
-CORS(app)  # pre frontend z iného pôvodu
-
-# Cesta k JSON kľúču
+from google.cloud import vision
+from google.oauth2 import service_account
+import os
 import json
 
-# z environment premennej
+app = Flask(__name__)
+CORS(app)
+
+# Načítanie Google API kľúča z environment premennej
 key_json = os.environ.get("GOOGLE_SERVICE_KEY")
 
 if not key_json:
     raise Exception("Missing GOOGLE_SERVICE_KEY environment variable")
 
 key_dict = json.loads(key_json)
-
-from google.oauth2 import service_account
 credentials = service_account.Credentials.from_service_account_info(key_dict)
-
 client = vision.ImageAnnotatorClient(credentials=credentials)
-
-
-client = vision.ImageAnnotatorClient()
 
 @app.route('/upload', methods=['POST'])
 def upload_image():
