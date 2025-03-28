@@ -31,6 +31,9 @@ def upload_image():
 
     results = []
     for obj in objects:
+        if obj.score < 0.2:  # Znížený prah detekcie
+            continue
+
         box = [{
             'x': vertex.x,
             'y': vertex.y
